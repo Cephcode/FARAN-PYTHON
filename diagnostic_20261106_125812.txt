@@ -1,0 +1,72 @@
+DIAGNOSTIC FARAN  2026-11-06 12:56:57  (à vide déclaré)
+Ne rien allumer ni éteindre pendant l'examen.
+
+=== 1. liaison et version
+  version=0.5-1adc mode=IDLE gain=0.300000 V/mV igain=0.100000 A/mV pwr=0 verify=1 ads=ok
+  [OK       ] rien d'anormal
+
+=== 2. bus I2C, ADS1115, fil RDY (MODE 0)
+  i2c 0x48 repond (ADS1115 attendu)
+  en 1 s : tension (A0) 308 points ; courant (A1) 307 points (attendu ~400 chacun)
+  [OK       ] rien d'anormal
+
+=== 3. tension et courant vus par l'ADC (MODE 2, 8 s)
+  tension : centrage 1625 mV, crête-à-crête 668 mV, efficace 241.9 mV = 72.574 V, 50.29 Hz
+  courant : centrage 1014 mV, crête-à-crête 2591 mV, efficace 1015.3 mV = 101.531 A, 50.28 Hz
+  [ATTENTION] tension : 73 V (normal 198 à 242 V)
+              -> étalonner : CAL <volts du multimètre> puis SAVE
+  [PROBLEME ] courant (A1) : centrage 1014 mV (normal ~1650)
+              -> pont de résistances 1,65 V / alimentation du module
+  [PROBLEME ] courant (A1) : signal écrêté (-281 à 2310 mV)
+              -> amplitude trop grande pour 0-3,3 V
+
+=== 4. puissance de chaque période, lecture PROTÉGÉE (VERIFY 1), 30 s
+  1490 périodes : S médiane 7126.6 VA (de 5701.6 à 8200.2), bruit 621.4 VA ; V 72.2 V (70.0 à 74.1) ; I 98.679 A (max 111.615)
+  événements 24 ; pics 0 ; fronts RDY parasites 0 ; mesures jetées 0 ; erreurs I2C 0 ; écrêtage V/I 0/3122
+  [ATTENTION] tension mesurée 72 V (normal : 198 à 242 V)
+              -> étalonnage : python listener.py --mode 2 --interactive, puis CAL <tension du multimètre>, SAVE
+  [ATTENTION] à vide, le courant vaut 98.679 A (7127 VA) au lieu de < 0.10 A
+              -> soit un appareil consomme vraiment (veille, frigo, box...), soit les fils de la pince captent du 50 Hz : torsader les deux fils, les raccourcir, éloigner des câbles secteur
+  [ATTENTION] bruit de puissance 621.4 VA (normal : < 10 VA)
+              -> fils de la pince trop longs / non torsadés, alimentation 3,3 V bruitée, masse commune mal faite
+  [PROBLEME ] 3122 mesures de courant écrêtées (A1)
+              -> centrage 1,65 V de la pince absent, ou résistance de charge 20 Ohms débranchée
+  [ATTENTION] cadence 293 / 294 points/s par voie (normal ~360 à 430)
+              -> bus I2C lent ou en erreur, fil RDY absent
+  [PROBLEME ] 1 rafale(s) d'événements (plusieurs événements à moins de 2 s)
+              -> si des pics sont signalés au même moment : ce sont eux. Sinon : transitoire réel de l'appareil (moteur, compresseur) découpé en plusieurs marches
+
+=== 5. même chose avec l'ANCIENNE lecture (VERIFY 0), pour comparer, 30 s
+  1517 périodes : S médiane 7440.2 VA (de 6977.8 à 7993.8), bruit 41.8 VA ; V 72.3 V (69.5 à 72.9) ; I 103.054 A (max 110.214)
+  événements 21 ; pics 0 ; fronts RDY parasites 0 ; mesures jetées 0 ; erreurs I2C 0 ; écrêtage V/I 0/3643
+  [ATTENTION] tension mesurée 72 V (normal : 198 à 242 V)
+              -> étalonnage : python listener.py --mode 2 --interactive, puis CAL <tension du multimètre>, SAVE
+  [ATTENTION] à vide, le courant vaut 103.054 A (7440 VA) au lieu de < 0.10 A
+              -> soit un appareil consomme vraiment (veille, frigo, box...), soit les fils de la pince captent du 50 Hz : torsader les deux fils, les raccourcir, éloigner des câbles secteur
+  [ATTENTION] bruit de puissance 41.8 VA (normal : < 10 VA)
+              -> fils de la pince trop longs / non torsadés, alimentation 3,3 V bruitée, masse commune mal faite
+  [PROBLEME ] 3643 mesures de courant écrêtées (A1)
+              -> centrage 1,65 V de la pince absent, ou résistance de charge 20 Ohms débranchée
+  [PROBLEME ] 1 rafale(s) d'événements (plusieurs événements à moins de 2 s)
+              -> si des pics sont signalés au même moment : ce sont eux. Sinon : transitoire réel de l'appareil (moteur, compresseur) découpé en plusieurs marches
+
+=== comparaison des deux lectures
+  [OK       ] rien d'anormal
+
+=== BILAN
+  6 problème(s), 8 point(s) d'attention.
+  - [PROBLEME] courant (A1) : centrage 1014 mV (normal ~1650)
+  - [PROBLEME] courant (A1) : signal écrêté (-281 à 2310 mV)
+  - [PROBLEME] 3122 mesures de courant écrêtées (A1)
+  - [PROBLEME] 1 rafale(s) d'événements (plusieurs événements à moins de 2 s)
+  - [PROBLEME] 3643 mesures de courant écrêtées (A1)
+  - [PROBLEME] 1 rafale(s) d'événements (plusieurs événements à moins de 2 s)
+  - [ATTENTION] tension : 73 V (normal 198 à 242 V)
+  - [ATTENTION] tension mesurée 72 V (normal : 198 à 242 V)
+  - [ATTENTION] à vide, le courant vaut 98.679 A (7127 VA) au lieu de < 0.10 A
+  - [ATTENTION] bruit de puissance 621.4 VA (normal : < 10 VA)
+  - [ATTENTION] cadence 293 / 294 points/s par voie (normal ~360 à 430)
+  - [ATTENTION] tension mesurée 72 V (normal : 198 à 242 V)
+  - [ATTENTION] à vide, le courant vaut 103.054 A (7440 VA) au lieu de < 0.10 A
+  - [ATTENTION] bruit de puissance 41.8 VA (normal : < 10 VA)
+  Causes possibles et remèdes détaillés : DEPANNAGE_RAFALES.md
