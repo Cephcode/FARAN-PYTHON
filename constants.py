@@ -17,7 +17,7 @@ LSB_COURANT_MV = 0.015625          # 1 code de la voie courant (calibre +-0,512 
 PLEINE_ECHELLE_COURANT_MV = 512.0  # 4096.0 en entrée simple A1
 
 # ------------------------------------------------------------ fichiers
-APPAREILS = "appareils.csv"        # liste des appareils : id,nom
+APPAREILS = "appareils.csv"        # liste des appareils : id,nom[,appareil] (voir README §5)
 DATASET = "dataset.csv"            # label,delta,transient_duration,ON|OFF[,delta_s,delta_pf,n_paliers,duree_chaine_ms,marche_max]
 MODELE = "modele.pkl"              # classifieur entraîné (mode entrainer)
 EVENEMENTS = "evenements.csv"      # mode enregistrer : tous les événements reçus (sur la carte SD si Raspberry Pi)
@@ -40,6 +40,21 @@ FEATURES_ANCIENNES = ["delta", "transient_duration"]
 # ------------------------------------------------------------ mode production
 RAFRAICHISSEMENT = 5       # secondes entre deux affichages du registre
 TOLERANCE_PUISSANCE = 0.3  # une extinction peut annuler un allumage de puissance +-30 % si le label diffère
+
+# ------------------------------------------------------------ API et page web (python api.py)
+VERSION_API = "1.0"
+HOTE_API = "127.0.0.1"     # "0.0.0.0" pour que la page soit visible depuis un téléphone du même réseau
+PORT_API = 8000            # la page : http://localhost:8000
+# Prix de l'électricité, en FCFA par kWh. À VÉRIFIER sur votre facture SONABEL : le prix dépend de votre
+# tranche de consommation et du type d'abonnement (social, normal...). 100 FCFA/kWh est un ordre de grandeur.
+TARIF_FCFA_KWH = 102.0
+DOSSIER_RAPPORTS = "rapports"     # une journée archivée par fichier (rapports/jour_AAAA-MM-JJ.csv)
+CARTE_MUETTE_S = 5.0       # sans aucune ligne de la carte depuis ce temps : « carte injoignable »
+# MODE DÉMONSTRATION (hackathon) : le « jour » ne dure que DUREE_DEMO_S secondes. Le rapport du jour couvre
+# la période en cours (au plus DUREE_DEMO_S), remise à zéro toutes les DUREE_DEMO_S ; le rapport du mois
+# regroupe ces périodes (archivées à part, dans rapports/demo/). False : vraies journées, vrais mois.
+MODE_DEMO = True
+DUREE_DEMO_S = 120
 
 # ------------------------------------------------------------ diagnostic, modes tension / courant
 # Ce qui est « normal » : chaque mesure est comparée à ces plages (python main.py diagnostic|tension|courant).

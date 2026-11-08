@@ -1,3 +1,8 @@
 pyserial
 numpy
 scikit-learn
+# API web (python api.py) et sa page
+fastapi
+uvicorn
+reportlab          # rapports en PDF (sans lui : page HTML imprimable)
+httpx              # seulement pour les tests de l'API (fastapi.testclient)

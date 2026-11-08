@@ -22,7 +22,7 @@ from datetime import datetime
 from board import Board, decrire
 from classifier import EventClassifier
 from constants import *
-from dataset import charger_appareils, constituer
+from dataset import charger_appareils, charger_groupes, constituer
 from diagnostic import examen_complet, suivre_voie
 from registre import Registre
 
@@ -140,7 +140,7 @@ def main(argv=None):
         elif args.mode == "enregistrer":
             enregistrer(board, args.fichier)
         elif args.mode == "dataset":
-            constituer(board, appareils, DATASET, args.nombre, duree=args.duree)
+            constituer(board, appareils, DATASET, args.nombre, duree=args.duree, groupes=charger_groupes(APPAREILS))
         elif args.mode == "production":
             production(board, classifier, appareils)
     except KeyboardInterrupt:

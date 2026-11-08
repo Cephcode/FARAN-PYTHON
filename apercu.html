@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="fr" data-theme="sombre">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Faran</title>
+<!-- Polices : Bricolage Grotesque (titres, chiffres) et Source Sans 3 (texte). Hors ligne : police système. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* ------------------------------------------------------------ thèmes (attribut data-theme sur <html>) */
+:root, [data-theme="sombre"] {
+  --fond: #141725; --panneau: #1C2033; --texte: #F1EADB; --texte-2: #B4AE9F; --filet: #2E3350;
+  --accent: #E2B04A;
+  --a1: #B4553A; --a2: #3E4C8A; --a3: #C9A15A; --a4: #7E8F6A; --a5: #8A6F9E;
+}
+[data-theme="clair"] {
+  --fond: #F4EDE0; --panneau: #EBE2D1; --texte: #1C2140; --texte-2: #5A5648; --filet: #D6CAB3;
+  --accent: #9A3E25;
+  --a1: #9A3E25; --a2: #2C3870; --a3: #B88A3E; --a4: #5E7048; --a5: #6E557F;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--fond); color: var(--texte);
+  font-family: "Source Sans 3", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 18px; line-height: 1.45;
+}
+.titre, .chiffre, h1, h2 { font-family: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif; }
+a { color: inherit; }
+.page { max-width: 1440px; margin: 0 auto; padding: 0 16px 40px; }
+@media (min-width: 900px) { .page { padding: 0 64px 64px; } }
+
+/* versions longue (ordinateur) et courte (téléphone) d'un même texte */
+.court { display: none; }
+@media (max-width: 899px) { .long { display: none; } .court { display: inline; } }
+
+/* ------------------------------------------------------------ en-tête */
+header { display: flex; align-items: center; gap: 24px; padding: 20px 0; }
+@media (min-width: 900px) { header { padding: 28px 0; } }
+.marque { display: flex; align-items: center; gap: 14px; font-size: 22px; font-weight: 700; margin: 0; flex: 1; }
+@media (min-width: 900px) { .marque { font-size: 26px; gap: 18px; } }
+.marque::before { content: ""; width: 26px; height: 26px; background: var(--a1); display: inline-block; flex: none; }
+@media (min-width: 900px) { .marque::before { width: 34px; height: 34px; } }
+.statut { color: var(--texte-2); white-space: nowrap; }
+.statut.hs { color: var(--a1); font-weight: 600; }
+header .statut { display: none; }
+@media (min-width: 900px) { header .statut { display: block; } }
+footer .statut { text-align: center; margin-top: 40px; }
+@media (min-width: 900px) { footer { display: none; } }
+
+button, .bouton {
+  font: inherit; font-weight: 600; cursor: pointer; text-decoration: none; white-space: nowrap;
+  border-radius: 999px; min-height: 44px; padding: 0 22px; display: inline-flex; align-items: center;
+  justify-content: center; gap: 10px;
+}
+#theme { color: var(--texte); background: transparent; border: 1px solid var(--filet); font-size: 16px; }
+#theme:hover { border-color: var(--texte-2); }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.bandeau { margin: 0 0 16px; padding: 10px 14px; border-left: 3px solid var(--a1); background: var(--panneau); }
+.bandeau[hidden] { display: none; }
+
+/* ------------------------------------------------------------ phrase et barre (toute la largeur) */
+.salut { color: var(--texte-2); margin: 16px 0 8px; font-size: 18px; }
+@media (min-width: 900px) { .salut { margin-top: 40px; font-size: 20px; } }
+.phrase { font-size: clamp(30px, 4.4vw, 60px); line-height: 1.12; letter-spacing: -0.02em; font-weight: 600;
+  margin: 0 0 24px; max-width: 33ch; }
+@media (max-width: 899px) { .phrase { max-width: none; } }
+.phrase .watts { color: var(--accent); white-space: nowrap; }
+sup { font-size: .65em; line-height: 0; }
+.barre { display: flex; gap: 4px; height: 44px; margin-bottom: 40px; }
+@media (min-width: 900px) { .barre { height: 56px; gap: 5px; margin-bottom: 52px; } }
+.barre.vide { background: var(--panneau); }
+.segment { position: relative; min-width: 6px; }
+.segment .pct { position: absolute; left: 10px; bottom: 8px; background: var(--fond); color: var(--texte);
+  font-size: 14px; font-weight: 600; padding: 1px 7px; display: none; }
+@media (min-width: 900px) { .segment .pct { display: block; } }
+
+/* ------------------------------------------------------------ deux colonnes au-dessus de ~900 px */
+.grille { display: grid; grid-template-columns: 1fr; gap: 40px; }
+@media (min-width: 900px) { .grille { grid-template-columns: minmax(0, 1.75fr) minmax(300px, 1fr); gap: 56px; align-items: start; } }
+
+h2 { font-size: 24px; font-weight: 600; margin: 0 0 12px; }
+@media (min-width: 900px) { h2 { font-size: 28px; } }
+.liste { list-style: none; margin: 0; padding: 0; }
+.liste li { display: grid; grid-template-columns: 40px 1fr auto; gap: 18px; align-items: center;
+  padding: 18px 0; border-bottom: 1px solid var(--filet); }
+@media (min-width: 900px) { .liste li { grid-template-columns: 48px 1fr auto; gap: 22px; padding: 22px 0; } }
+.carre { width: 40px; height: 40px; }
+@media (min-width: 900px) { .carre { width: 48px; height: 48px; } }
+.nom { font-weight: 700; font-size: 19px; }
+@media (min-width: 900px) { .nom { font-size: 21px; } }
+.depuis { color: var(--texte-2); }
+.puissance { text-align: right; white-space: nowrap; }
+.puissance .chiffre { font-size: 26px; font-weight: 600; line-height: 1.1; }
+@media (min-width: 900px) { .puissance .chiffre { font-size: 32px; } }
+.puissance .sous { color: var(--texte-2); font-size: 15px; }
+.liste li.rien { display: block; color: var(--texte-2); }
+
+/* ------------------------------------------------------------ rapports : un panneau, sans ombre */
+.rapports { background: var(--panneau); padding: 22px 24px 26px; }
+@media (min-width: 900px) { .rapports { padding: 28px 28px 30px; } }
+.rapports h2 { padding-bottom: 16px; border-bottom: 1px solid var(--filet); margin-bottom: 0; }
+.rapport { padding: 22px 0 26px; }
+.rapport + .rapport { border-top: 1px solid var(--filet); }
+.rapport h3 { margin: 0 0 4px; font-size: 18px; font-weight: 400; color: var(--texte-2); font-family: inherit; }
+.valeur { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 16px; }
+.valeur .chiffre { font-size: 40px; font-weight: 600; line-height: 1.1; letter-spacing: -0.01em; }
+.valeur .cout { color: var(--texte-2); }
+.actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.bouton { background: var(--texte); color: var(--fond); border: 0; font-size: 18px; padding: 0 28px; min-height: 52px; }
+.bouton:hover { opacity: .9; }
+.bouton svg { width: 18px; height: 18px; flex: none; }
+@media (max-width: 899px) { .bouton { flex: 1; } }
+.csv { color: var(--texte-2); font-size: 15px; min-height: 44px; display: inline-flex; align-items: center; }
+.note { color: var(--texte-2); font-size: 16px; margin: 20px 0 0; }
+.note[hidden] { display: none; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <h1 class="marque titre">Faran</h1>
+    <div class="statut hs" id="statut-haut" aria-live="polite">Connexion…</div>
+    <button type="button" id="theme"><span class="long">Thème clair</span><span class="court">Clair</span></button>
+  </header>
+  <p class="bandeau" id="bandeau" role="status" hidden></p>
+
+  <section aria-labelledby="phrase">
+    <p class="salut" id="salut">Bonjour</p>
+    <p class="phrase titre" id="phrase">…</p>
+    <div class="barre vide" id="barre" role="img" aria-label="Répartition de la puissance"></div>
+  </section>
+
+  <main class="grille">
+    <section>
+      <h2>Ce qui est allumé</h2>
+      <ul class="liste" id="liste"></ul>
+    </section>
+
+    <aside class="rapports" aria-label="Rapports">
+      <h2>Rapports</h2>
+      <div class="rapport">
+        <h3 id="jour-titre">Aujourd'hui, depuis minuit</h3>
+        <div class="valeur"><span class="chiffre" id="jour-kwh">– kWh</span><span class="cout" id="jour-cout"></span></div>
+        <div class="actions">
+          <a class="bouton" id="jour-pdf" href="#" download><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Rapport du jour</a>
+          <a class="csv" id="jour-csv" href="#" download>CSV</a>
+        </div>
+      </div>
+      <div class="rapport">
+        <h3 id="mois-titre">Ce mois-ci</h3>
+        <div class="valeur"><span class="chiffre" id="mois-kwh">– kWh</span><span class="cout" id="mois-cout"></span></div>
+        <div class="actions">
+          <a class="bouton" id="mois-pdf" href="#" download><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Rapport du mois</a>
+          <a class="csv" id="mois-csv" href="#" download>CSV</a>
+        </div>
+      </div>
+      <p class="note" id="note-demo" hidden></p>
+    </aside>
+  </main>
+
+  <footer><div class="statut hs" id="statut-bas">Connexion…</div></footer>
+</div>
+
+<script>
+"use strict";
+// Servie par api.py (http://localhost:8000) : l'API est à la même adresse. Ouverte comme fichier : localhost:8000.
+const API = location.protocol.startsWith("http") ? "" : "http://localhost:8000";
+const $ = (id) => document.getElementById(id);
+
+// ------------------------------------------------------------ thème, mémorisé dans le navigateur
+function lireTheme() { try { return localStorage.getItem("faran-theme"); } catch (e) { return null; } }
+function appliquerTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  const autre = t === "sombre" ? "clair" : "sombre";
+  $("theme").innerHTML = '<span class="long">Thème ' + autre + '</span><span class="court">' +
+    autre.charAt(0).toUpperCase() + autre.slice(1) + "</span>";
+  $("theme").setAttribute("aria-label", "Passer au thème " + autre);
+  try { localStorage.setItem("faran-theme", t); } catch (e) { /* navigation privée : tant pis */ }
+}
+appliquerTheme(lireTheme() === "clair" ? "clair" : "sombre");
+$("theme").addEventListener("click", () =>
+  appliquerTheme(document.documentElement.getAttribute("data-theme") === "sombre" ? "clair" : "sombre"));
+
+// ------------------------------------------------------------ petits outils de texte
+const NOMBRES = ["Zéro", "Un", "Deux", "Trois", "Quatre", "Cinq", "Six", "Sept", "Huit", "Neuf", "Dix"];
+const MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre",
+              "novembre", "décembre"];
+const hm = (d) => d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+const entier = (x) => Math.round(x).toLocaleString("fr-FR");
+function kwh(x) { return x.toLocaleString("fr-FR", { minimumFractionDigits: x < 10 ? 2 : 1, maximumFractionDigits: x < 1 ? 3 : (x < 10 ? 2 : 1) }); }
+function duree(s) {
+  s = Math.max(0, Math.floor(s));
+  if (s >= 3600) return Math.floor(s / 3600) + " h " + String(Math.floor(s % 3600 / 60)).padStart(2, "0");
+  if (s >= 60) return Math.floor(s / 60) + " min";
+  return s + " s";
+}
+const majuscule = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+function salutation(d) { const h = d.getHours(); return h < 12 ? "Bonjour" : h < 18 ? "Bon après-midi" : "Bonsoir"; }
+
+// La phrase principale : longue sur ordinateur, courte sur téléphone.
+function phrase(n, w, fcfa) {
+  if (n === 0) return "Rien ne consomme chez vous en ce moment.";
+  const watts = '<span class="watts">' + entier(w) + " W</span>";
+  const nb = n <= 10 ? NOMBRES[n] : n;
+  if (n === 1)
+    return '<span class="long">Un appareil tourne chez vous. Il tire ' + watts + ", soit environ " + entier(fcfa) +
+           ' FCFA par heure.</span><span class="court">Un appareil tourne. Il tire ' + watts + ", environ " +
+           entier(fcfa) + " FCFA par heure.</span>";
+  return '<span class="long">' + nb + " appareils tournent chez vous. Ensemble, ils tirent " + watts + ", soit environ " +
+         entier(fcfa) + ' FCFA par heure.</span><span class="court">' + nb + " appareils tournent. Ensemble, ils tirent " +
+         watts + ", environ " + entier(fcfa) + " FCFA par heure.</span>";
+}
+// « Il projette depuis… », « Elle est allumée depuis… » : selon le nom de l'appareil
+function verbe(nom) {
+  const n = nom.toLowerCase();
+  if (/projecteur/.test(n)) return "Il projette";
+  if (/t[ée]l[ée]|\btv\b/.test(n)) return "Elle est allumée";
+  if (/lampe|ampoule/.test(n)) return "Elle éclaire";
+  if (/\bfer\b|bouilloire|chauffe/.test(n)) return "Il chauffe";
+  return "Il tourne";
+}
+const echapper = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+// Une couleur par appareil, toujours la même pendant la visite (barre et liste)
+const COULEURS = ["--a1", "--a2", "--a3", "--a4", "--a5"];
+const couleurDe = {};
+function couleur(label) {
+  if (!(label in couleurDe)) couleurDe[label] = COULEURS[Object.keys(couleurDe).length % COULEURS.length];
+  return "var(" + couleurDe[label] + ")";
+}
+
+// ------------------------------------------------------------ affichage
+let etat = null;          // la dernière réponse de /api/etat
+let recuA = 0;            // quand (Date.now()) on l'a reçue : la durée avance entre deux appels
+let panneDepuis = null;   // première fois que l'API ou la carte n'a pas répondu
+
+function afficher() {
+  if (!etat) return;
+  $("salut").textContent = salutation(new Date());
+  const app = etat.appareils_allumes;
+  $("phrase").innerHTML = phrase(app.length, etat.puissance_totale_w, etat.cout_heure_fcfa);
+
+  const barre = $("barre");
+  barre.classList.toggle("vide", app.length === 0);
+  barre.innerHTML = app.map((a) =>
+    '<div class="segment" style="flex:' + a.part_pct + " 1 0;background:" + couleur(a.label) + '">' +
+    (a.part_pct >= 6 ? '<span class="pct">' + Math.round(a.part_pct) + " %</span>" : "") + "</div>").join("");
+  barre.setAttribute("aria-label", app.length ? "Répartition : " + app.map((a) => a.nom + " " + Math.round(a.part_pct) + " %").join(", ")
+                                              : "Aucun appareil allumé");
+
+  $("liste").innerHTML = app.length ? app.map((a) =>
+    '<li><span class="carre" style="background:' + couleur(a.label) + '" aria-hidden="true"></span>' +
+    '<div><div class="nom">' + echapper(majuscule(a.nom)) + '</div><div class="depuis" data-duree="' + a.duree_s +
+    '" data-heure="' + hm(new Date(a.depuis)) + '" data-verbe="' + verbe(a.nom) + '"></div></div>' +
+    '<div class="puissance"><div class="chiffre">' + entier(a.puissance_w) + ' W</div><div class="sous">' +
+    '<span class="long">≈ ' + entier(a.cout_heure_fcfa) + ' FCFA / h</span><span class="court">' +
+    Math.round(a.part_pct) + " %</span></div></div></li>").join("")
+    : '<li class="rien">Aucun appareil allumé.</li>';
+  tic();
+
+  $("jour-kwh").textContent = kwh(etat.energie_jour_kwh) + " kWh";
+  $("jour-cout").textContent = "≈ " + entier(etat.cout_jour_fcfa) + " FCFA";
+  $("mois-kwh").textContent = kwh(etat.energie_mois_kwh) + " kWh";
+  $("mois-cout").textContent = "≈ " + entier(etat.cout_mois_fcfa) + " FCFA";
+  $("mois-titre").innerHTML = "Ce mois-ci, depuis le 1<sup>er</sup> " + MOIS[new Date(etat.debut_mois).getMonth()];
+  if (etat.mode_demo) {
+    const min = Math.round(etat.duree_demo_s / 60);
+    const quoi = min >= 2 ? min + " dernières minutes" : etat.duree_demo_s + " dernières secondes";
+    $("jour-titre").textContent = majuscule(quoi);
+    $("note-demo").textContent = "Démonstration : le rapport du jour couvre les " + quoi + ".";
+    $("note-demo").hidden = false;
+  } else {
+    $("jour-titre").textContent = "Aujourd'hui, depuis minuit";
+    $("note-demo").hidden = true;
+  }
+}
+
+// chaque seconde : les durées avancent, sans attendre l'API
+function tic() {
+  const ecoule = etat && !panneDepuis ? (Date.now() - recuA) / 1000 : 0;
+  document.querySelectorAll(".depuis").forEach((el) => {
+    const d = duree(Number(el.dataset.duree) + ecoule), h = el.dataset.heure;
+    el.innerHTML = '<span class="long">' + el.dataset.verbe + " depuis " + d + ", depuis " + h + '.</span>' +
+                   '<span class="court">depuis ' + d + " · " + h + "</span>";
+  });
+  for (const id of ["statut-haut", "statut-bas"]) {
+    const s = $(id);
+    s.classList.toggle("hs", !!panneDepuis || !etat);
+    s.textContent = panneDepuis ? "Carte injoignable" : etat ? "Carte reliée · " + hm(new Date()) : "Connexion…";
+  }
+}
+
+function panne() {
+  if (!panneDepuis) panneDepuis = new Date();
+  $("bandeau").textContent = "Carte injoignable depuis " + hm(panneDepuis) + ". Les dernières valeurs restent affichées.";
+  $("bandeau").hidden = false;
+  tic();
+}
+
+async function rafraichir() {
+  try {
+    const r = await fetch(API + "/api/etat", { cache: "no-store" });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    etat = await r.json();
+    recuA = Date.now();
+    if (etat.carte_connectee) { panneDepuis = null; $("bandeau").hidden = true; }
+    afficher();
+    if (!etat.carte_connectee) panne();
+  } catch (e) {
+    panne();   // l'API ne répond pas : on garde les dernières valeurs
+  }
+}
+
+// liens de téléchargement des rapports (PDF, et CSV à côté)
+for (const [id, quoi, fmt] of [["jour-pdf", "journalier", "pdf"], ["jour-csv", "journalier", "csv"],
+                               ["mois-pdf", "mensuel", "pdf"], ["mois-csv", "mensuel", "csv"]]) {
+  $(id).href = API + "/api/rapports/" + quoi + "?format=" + fmt;
+}
+
+rafraichir();
+setInterval(rafraichir, 2000);
+setInterval(tic, 1000);
+</script>
+</body>
+</html>

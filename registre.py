@@ -40,10 +40,11 @@ class Session():
 
 class Registre():
 
-    def __init__(self, appareils, journal_path=None) -> None:
+    def __init__(self, appareils, journal_path=None, quand_fini=None) -> None:
         self.appareils = appareils      # {label: nom}
         self.actifs = []                # liste de Session
         self.journal_path = journal_path
+        self.quand_fini = quand_fini    # fonction(session, fin) appelée à chaque utilisation terminée (api.py)
 
     def nom(self, label):
         return self.appareils.get(label, "appareil %s" % label)
@@ -62,6 +63,8 @@ class Registre():
             return "extinction de %s (%.0f W) sans allumage connu : ignoree" % (self.nom(label), puissance)
         self.actifs.remove(session)          # allumage et extinction s'annulent
         self.noter_au_journal(session, maintenant)
+        if self.quand_fini:
+            self.quand_fini(session, maintenant)
         return "%s eteint apres %s : %.2f Wh consommes" % (
             session.nom, horloge(session.duree(maintenant)), session.energie_wh(maintenant))
 

@@ -1,0 +1,5 @@
+debut,fin,label,appareil,utilisations,reportees,duree_s,energie_kwh,cout_fcfa,puissance_moyenne_w
+2026-11-08T00:00:00,2026-11-08T20:31:05,103,fer a repasser,1,0,18,0.005,0.5,996.4
+2026-11-08T00:00:00,2026-11-08T20:31:05,102,ventilateur mode 2,2,0,36,0.0005,0.0,45.3
+2026-11-08T00:00:00,2026-11-08T20:31:05,101,lampe,1,0,24,0.0004,0.0,59.0
+2026-11-08T00:00:00,2026-11-08T20:31:05,,TOTAL,4,0,78,0.0059,0.6,269.0
