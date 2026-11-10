@@ -170,6 +170,66 @@ class TestRegistre(unittest.TestCase):
         self.assertEqual(r.actifs, [])
         self.assertIn("ignoree", r.ajouter(1, {"type": "OFF", "delta": -60.0}, maintenant=6))
 
+    # ventilateur à 3 vitesses, nommé comme dans appareils.csv
+    VENTILO = {1: "ventilateur mode 1", 2: "ventilateur mode 2", 3: "ventilateur mode 3", 4: "tele",
+               5: "ventilateur mode 2 direct", 6: "ventilateur mode 3 direct"}
+
+    def etat(self, r):
+        return sorted((s.nom, round(s.puissance)) for s in r.actifs)
+
+    def test_vitesse_descend_depuis_la_vitesse_en_cours(self):
+        """0 -> 1 -> 2 -> 3, puis 3 -> 2 classé « mode 2 » par erreur : c'est la vitesse 3 qui part."""
+        r = Registre(self.VENTILO)
+        r.ajouter(1, {"type": "ON", "delta": 48.0}, maintenant=0)
+        r.ajouter(2, {"type": "ON", "delta": 3.0}, maintenant=10)
+        r.ajouter(3, {"type": "ON", "delta": 3.0}, maintenant=20)
+        msg = r.ajouter(2, {"type": "OFF", "delta": -3.0}, maintenant=30)
+        self.assertIn("mode 3 -> mode 2", msg)
+        self.assertEqual(self.etat(r), [("ventilateur mode 1", 48), ("ventilateur mode 2", 3)])
+        msg = r.ajouter(3, {"type": "OFF", "delta": -3.0}, maintenant=40)   # 2 -> 1 classé « mode 3 »
+        self.assertIn("mode 2 -> mode 1", msg)
+        self.assertEqual(self.etat(r), [("ventilateur mode 1", 48)])
+
+    def test_allume_directement_en_vitesse_3_puis_descend(self):
+        r = Registre(self.VENTILO)
+        r.ajouter(6, {"type": "ON", "delta": 53.0}, maintenant=0)
+        self.assertIn("mode 3 -> mode 2", r.ajouter(3, {"type": "OFF", "delta": -3.0}, maintenant=10))
+        self.assertEqual(self.etat(r), [("ventilateur mode 2 direct", 50)])
+        self.assertIn("mode 2 -> mode 1", r.ajouter(2, {"type": "OFF", "delta": -3.0}, maintenant=20))
+        self.assertEqual(self.etat(r), [("ventilateur mode 1", 47)])
+        self.assertIn("mode 1 -> mode 2", r.ajouter(3, {"type": "ON", "delta": 3.0}, maintenant=30))
+        self.assertEqual(self.etat(r), [("ventilateur mode 1", 47), ("ventilateur mode 2", 3)])
+
+    def test_extinction_complete_retire_toutes_les_vitesses(self):
+        with tempfile.TemporaryDirectory() as d:
+            journal = os.path.join(d, "journal.csv")
+            r = Registre(self.VENTILO, journal)
+            r.ajouter(4, {"type": "ON", "delta": 30.0}, maintenant=0)
+            r.ajouter(1, {"type": "ON", "delta": 48.0}, maintenant=0)
+            r.ajouter(2, {"type": "ON", "delta": 3.0}, maintenant=10)
+            r.ajouter(3, {"type": "ON", "delta": 3.0}, maintenant=20)
+            msg = r.ajouter(6, {"type": "OFF", "delta": -54.0}, maintenant=3600)   # éteint depuis la vitesse 3
+            self.assertIn("etait en mode 3", msg)
+            self.assertEqual(self.etat(r), [("tele", 30)])                   # la télé n'est pas touchée
+            with open(journal) as f:
+                self.assertEqual(f.read().count("ventilateur"), 3)            # les 3 lignes au journal
+
+    def test_extinction_classee_marche_mais_trop_grande(self):
+        """OFF -50 W classé « mode 2 » par erreur : il retire tout le ventilateur, ce n'est pas une vitesse."""
+        r = Registre(self.VENTILO)
+        r.ajouter(1, {"type": "ON", "delta": 48.0}, maintenant=0)
+        r.ajouter(2, {"type": "ON", "delta": 3.0}, maintenant=10)
+        self.assertIn("eteint", r.ajouter(2, {"type": "OFF", "delta": -50.0}, maintenant=20))
+        self.assertEqual(r.actifs, [])
+
+    def test_vitesse_sans_ventilateur_en_marche_regle_generale(self):
+        r = Registre(self.VENTILO)
+        self.assertIn("ignoree", r.ajouter(3, {"type": "OFF", "delta": -3.0}, maintenant=0))
+        r.ajouter(1, {"type": "ON", "delta": 48.0}, maintenant=0)
+        r.ajouter(4, {"type": "ON", "delta": 30.0}, maintenant=0)
+        r.ajouter(4, {"type": "OFF", "delta": -30.0}, maintenant=5)          # la télé : inchangé
+        self.assertEqual(self.etat(r), [("ventilateur mode 1", 48)])
+
     def test_horloge(self):
         self.assertEqual(horloge(3725), "01:02:05")
 

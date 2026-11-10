@@ -1,0 +1,6 @@
+debut,fin,label,appareil,utilisations,reportees,duree_s,energie_kwh,cout_fcfa,puissance_moyenne_w
+2026-11-10T16:02:00,2026-11-10T16:04:00,6,ventilateur mode 3 direct,2,0,74,0.0011,0.1,53.8
+2026-11-10T16:02:00,2026-11-10T16:04:00,4,tele,1,0,50,0.0004,0.0,29.8
+2026-11-10T16:02:00,2026-11-10T16:04:00,5,ventilateur mode 2 direct,1,0,14,0.0002,0.0,50.9
+2026-11-10T16:02:00,2026-11-10T16:04:00,1,ventilateur mode 1,1,0,9,0.0001,0.0,47.7
+2026-11-10T16:02:00,2026-11-10T16:04:00,,TOTAL,5,0,147,0.0018,0.2,45.0
