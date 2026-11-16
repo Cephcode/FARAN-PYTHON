@@ -1,0 +1,5 @@
+debut,fin,label,appareil,utilisations,reportees,duree_s,energie_kwh,cout_fcfa,puissance_moyenne_w
+2026-11-16T13:16:00,2026-11-16T13:18:00,1,ventilateur mode 1,2,1,35,0.0005,0.0,48.0
+2026-11-16T13:16:00,2026-11-16T13:18:00,5,ventilateur mode 2,1,1,28,0.0,0.0,3.6
+2026-11-16T13:16:00,2026-11-16T13:18:00,6,ventilateur mode 3,1,1,28,0.0,0.0,3.2
+2026-11-16T13:16:00,2026-11-16T13:18:00,,TOTAL,4,3,91,0.0005,0.1,20.4
